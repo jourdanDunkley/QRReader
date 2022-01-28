@@ -97,7 +97,8 @@ class _QRScannerViewState extends State<QRScannerView> {
     controller.scannedDataStream.listen((scanData) {
       bool dataIsURL = stringValidator.isStringURL(scanData.code!);
       if (dataIsURL) {
-        launch(scanData.code!);
+        showLinkAlertDialog(context, scanData.code!, controller);
+        controller.pauseCamera();
       } else {
         showAlertDialog(context, scanData.code!, controller);
         controller.pauseCamera();
@@ -141,6 +142,39 @@ showAlertDialog(
     actions: [
       okButton,
     ],
+  );
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+showLinkAlertDialog(
+    BuildContext context, String message, QRViewController controller) {
+  Widget okButton = TextButton(
+    child: Text("Ok"),
+    onPressed: () async {
+      launch(message);
+      Navigator.of(context).pop();
+      await controller.resumeCamera();
+    },
+  );
+
+  Widget cancelButton = TextButton(
+    child: Text("Cancel"),
+    onPressed: () async {
+      Navigator.of(context).pop();
+      await controller.resumeCamera();
+    },
+  );
+
+  AlertDialog alert = AlertDialog(
+    title: Text("URL found! Open Link?"),
+    content: Text(message),
+    actions: [okButton, cancelButton],
   );
 
   showDialog(
