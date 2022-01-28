@@ -99,6 +99,7 @@ class _QRScannerViewState extends State<QRScannerView> {
       if (dataIsURL) {
         launch(scanData.code!);
       } else {
+        showAlertDialog(context, scanData.code!, controller);
         controller.pauseCamera();
       }
     });
@@ -122,4 +123,30 @@ class _QRScannerViewState extends State<QRScannerView> {
   bool isStringURL(String message) {
     return isURL(message);
   }
+}
+
+showAlertDialog(
+    BuildContext context, String message, QRViewController controller) {
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () async {
+      Navigator.of(context).pop();
+      await controller.resumeCamera();
+    },
+  );
+
+  AlertDialog alert = AlertDialog(
+    title: Text("Message Scanned!"),
+    content: Text(message),
+    actions: [
+      okButton,
+    ],
+  );
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
