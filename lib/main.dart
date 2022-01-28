@@ -40,6 +40,7 @@ class _QRScannerViewState extends State<QRScannerView> {
       body: Column(
         children: <Widget>[
           Expanded(flex: 11, child: _buildQrView(context)),
+          Expanded(flex: 1, child: _buildBottomBar(context)),
         ],
       ),
     );
@@ -62,6 +63,33 @@ class _QRScannerViewState extends State<QRScannerView> {
     );
   }
 
+  Widget _buildBottomBar(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          child: IconButton(
+            icon: Icon(Icons.flash_on),
+            onPressed: () async {
+              await controller?.toggleFlash();
+              setState(() {});
+            },
+          ),
+        ),
+        Container(
+          child: IconButton(
+            icon: Icon(Icons.flip_camera_android),
+            onPressed: () async {
+              await controller?.flipCamera();
+              setState(() {});
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   void _onQRViewCreated(QRViewController controller) {
     setState(() {
       this.controller = controller;
@@ -71,6 +99,7 @@ class _QRScannerViewState extends State<QRScannerView> {
       if (dataIsURL) {
         launch(scanData.code!);
       } else {
+        showAlertDialog(context, scanData.code!, controller);
         controller.pauseCamera();
       }
     });
@@ -94,4 +123,30 @@ class _QRScannerViewState extends State<QRScannerView> {
   bool isStringURL(String message) {
     return isURL(message);
   }
+}
+
+showAlertDialog(
+    BuildContext context, String message, QRViewController controller) {
+  Widget okButton = TextButton(
+    child: Text("OK"),
+    onPressed: () async {
+      Navigator.of(context).pop();
+      await controller.resumeCamera();
+    },
+  );
+
+  AlertDialog alert = AlertDialog(
+    title: Text("Message Scanned!"),
+    content: Text(message),
+    actions: [
+      okButton,
+    ],
+  );
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
