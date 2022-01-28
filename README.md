@@ -1,6 +1,7 @@
 # QRReader
 
-A new Flutter project.
+A Flutter Project Designed to Read QR Codes and assess what to do with the data contained in it.
+If the data is a URL, the App will open it in the web browser for the user. However, if the data is not a URL it will simply show an alert dialog containing the text.
 
 ## Getting Started
 
