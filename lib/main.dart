@@ -155,7 +155,7 @@ showAlertDialog(
 showLinkAlertDialog(
     BuildContext context, String message, QRViewController controller) {
   Widget okButton = TextButton(
-    child: Text("OK"),
+    child: Text("Ok"),
     onPressed: () async {
       launch(message);
       Navigator.of(context).pop();
