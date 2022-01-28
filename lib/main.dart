@@ -40,6 +40,7 @@ class _QRScannerViewState extends State<QRScannerView> {
       body: Column(
         children: <Widget>[
           Expanded(flex: 11, child: _buildQrView(context)),
+          Expanded(flex: 1, child: _buildBottomBar(context)),
         ],
       ),
     );
@@ -59,6 +60,33 @@ class _QRScannerViewState extends State<QRScannerView> {
           borderColor: Colors.white,
           cutOutSize: scanArea),
       onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
+    );
+  }
+
+  Widget _buildBottomBar(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          child: IconButton(
+            icon: Icon(Icons.flash_on),
+            onPressed: () async {
+              await controller?.toggleFlash();
+              setState(() {});
+            },
+          ),
+        ),
+        Container(
+          child: IconButton(
+            icon: Icon(Icons.flip_camera_android),
+            onPressed: () async {
+              await controller?.flipCamera();
+              setState(() {});
+            },
+          ),
+        ),
+      ],
     );
   }
 
